@@ -15,11 +15,15 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.JsonRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class UsuarioActivity extends AppCompatActivity implements Response.Listener<JSONObject>,Response.ErrorListener {
     EditText jetusuario,jetnombre,jetcorreo,jetclave;
@@ -53,8 +57,41 @@ public class UsuarioActivity extends AppCompatActivity implements Response.Liste
             jetusuario.requestFocus();
         }else{
             String url = "http://172.18.59.83:80/WebServices/registrocorreo.php?usr="+usr;
+            StringRequest postRequest = new StringRequest(Request.Method.POST, url,
+                    new Response.Listener<String>()
+                    {
+                        @Override
+                        public void onResponse(String response) {
+                            Limpiar_Campos();
+                            Toast.makeText(getApplicationContext(), "Registro de usuario realizado!", Toast.LENGTH_LONG).show();
+                        }
+                    },
+                    new Response.ErrorListener()
+                    {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Toast.makeText(getApplicationContext(), "Registro de usuario incorrecto!", Toast.LENGTH_LONG).show();
+                        }
+                    }
+            ) {
+                @Override
+                protected Map<String, String> getParams()
+                {
+                    Map<String, String> params = new HashMap<String, String>();
+                    params.put("usr",jetusuario.getText().toString().trim());
+                    params.put("nombre", jetnombre.getText().toString().trim());
+                    params.put("correo",jetcorreo.getText().toString().trim());
+                    params.put("clave",jetclave.getText().toString().trim());
+                    return params;
+                }
+            };
+            RequestQueue requestQueue = Volley.newRequestQueue(this);
+            requestQueue.add(postRequest);
+
         }
     }
+
+
     public  void Consultar(View view){
         usr = jetusuario.getText().toString();
         if (usr.isEmpty()){
