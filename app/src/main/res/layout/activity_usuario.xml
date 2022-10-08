@@ -159,6 +159,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
+                android:onClick="Eliminar"
                 android:text="Eliminar" />
 
 
@@ -175,6 +176,7 @@
                 android:id="@+id/btnanular"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
+                android:onClick="Anular"
                 android:text="Anular" />
 
             <Button

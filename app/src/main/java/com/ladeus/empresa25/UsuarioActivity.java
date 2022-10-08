@@ -32,6 +32,7 @@ public class UsuarioActivity extends AppCompatActivity implements Response.Liste
     JsonRequest jrq;
     String usr,nombre,correo,clave;
     public byte sw;
+    String url;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,10 +54,16 @@ public class UsuarioActivity extends AppCompatActivity implements Response.Liste
         correo = jetcorreo.getText().toString();
         clave = jetclave.getText().toString();
         if (usr.isEmpty() || nombre.isEmpty() || correo.isEmpty() || clave.isEmpty()){
-            Toast.makeText(this, "", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Todos los campos son requeridos", Toast.LENGTH_SHORT).show();
             jetusuario.requestFocus();
         }else{
-            String url = "http://172.18.59.83:80/WebServices/registrocorreo.php?usr="+usr;
+            if(sw == 0){
+                url = "http://172.18.48.47:80/WebServices/registrocorreo.php";
+            }else{
+                url = "http://172.18.48.47:80/WebServices/actualiza.php";
+                sw = 0;
+            }
+
             StringRequest postRequest = new StringRequest(Request.Method.POST, url,
                     new Response.Listener<String>()
                     {
@@ -90,14 +97,91 @@ public class UsuarioActivity extends AppCompatActivity implements Response.Liste
 
         }
     }
+    public void Eliminar (View view){
+        usr  = jetusuario.getText().toString();
+        if (usr.isEmpty()){
+            Toast.makeText(this, "El usuario es requerido", Toast.LENGTH_SHORT).show();
+            jetusuario.requestFocus();
+        }else{
 
+                url = "http://172.18.48.47:80/WebServices/elimina.php";
+
+            StringRequest postRequest = new StringRequest(Request.Method.POST, url,
+                    new Response.Listener<String>()
+                    {
+                        @Override
+                        public void onResponse(String response) {
+                            Limpiar_Campos();
+                            Toast.makeText(getApplicationContext(), "Usuario Eliminado Correctamente!", Toast.LENGTH_LONG).show();
+                        }
+                    },
+                    new Response.ErrorListener()
+                    {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Toast.makeText(getApplicationContext(), "Usuario no se elimino!", Toast.LENGTH_LONG).show();
+                        }
+                    }
+            ) {
+                @Override
+                protected Map<String, String> getParams()
+                {
+                    Map<String, String> params = new HashMap<String, String>();
+                    params.put("usr",jetusuario.getText().toString().trim());
+                    return params;
+                }
+            };
+            RequestQueue requestQueue = Volley.newRequestQueue(this);
+            requestQueue.add(postRequest);
+
+        }
+    }
+    public void Anular (View view){
+        usr  = jetusuario.getText().toString();
+        if (usr.isEmpty()){
+            Toast.makeText(this, "El usuario es requerido", Toast.LENGTH_SHORT).show();
+            jetusuario.requestFocus();
+        }else{
+
+            url = "http://172.18.48.47:80/WebServices/anula.php";
+
+            StringRequest postRequest = new StringRequest(Request.Method.POST, url,
+                    new Response.Listener<String>()
+                    {
+                        @Override
+                        public void onResponse(String response) {
+                            Limpiar_Campos();
+                            Toast.makeText(getApplicationContext(), "Usuario Anulado Correctamente!", Toast.LENGTH_LONG).show();
+                        }
+                    },
+                    new Response.ErrorListener()
+                    {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Toast.makeText(getApplicationContext(), "Usuario no se anulo!", Toast.LENGTH_LONG).show();
+                        }
+                    }
+            ) {
+                @Override
+                protected Map<String, String> getParams()
+                {
+                    Map<String, String> params = new HashMap<String, String>();
+                    params.put("usr",jetusuario.getText().toString().trim());
+                    return params;
+                }
+            };
+            RequestQueue requestQueue = Volley.newRequestQueue(this);
+            requestQueue.add(postRequest);
+
+        }
+    }
 
     public  void Consultar(View view){
         usr = jetusuario.getText().toString();
         if (usr.isEmpty()){
             Toast.makeText(this, "El usuario es requerido para la busqueda", Toast.LENGTH_SHORT).show();
         }else {
-            String url = "http://172.18.59.83:80/WebServices/consulta.php?usr="+usr;
+             url = "http://172.18.48.47:80/WebServices/consulta.php?usr="+usr;
             jrq = new JsonObjectRequest(Request.Method.GET,url,null,this,this);
             rq.add(jrq);
         }
