@@ -50,6 +50,9 @@ public class UsuarioActivity extends AppCompatActivity implements Response.Liste
         clave = jetclave.getText().toString();
         if (usr.isEmpty() || nombre.isEmpty() || correo.isEmpty() || clave.isEmpty()){
             Toast.makeText(this, "", Toast.LENGTH_SHORT).show();
+            jetusuario.requestFocus();
+        }else{
+            String url = "http://172.18.59.83:80/WebServices/registrocorreo.php?usr="+usr;
         }
     }
     public  void Consultar(View view){
